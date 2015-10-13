@@ -10,11 +10,6 @@ import "github.com/maxymania/dream-lang/lexer"
 import "github.com/maxymania/dream-lang/tree"
 import "fmt"
 
-type ErrMsg struct{
-	P scanner.Position
-	E string
-}
-
 type FuncVarSpace struct{
 	Base tree.VarSpace
 	C int
@@ -40,10 +35,33 @@ func(f *FuncVarSpace) Scalar(s string) tree.Expression {
 	return f.Base.Scalar(s)
 }
 
+type FuncTempReg struct{
+	O int
+	N map[int]string
+}
+func NewFuncTempReg() *FuncTempReg {
+	return &FuncTempReg{0,make(map[int]string)}
+}
+func (f *FuncTempReg) Reg(n int) string {
+	if d,ok := f.N[n]; ok { return d }
+	s := fmt.Sprintf("reg%d",n)
+	f.N[n] = s
+	return s
+}
+func (f *FuncTempReg) Add(n int) {
+	f.O += n
+}
+
+
+type ErrMsg struct{
+	P scanner.Position
+	E string
+}
 
 type ExprParser struct{
 	Pos []ErrMsg
 	Vsp tree.VarSpace
+	Tmp tree.TempReg
 }
 func (e *ExprParser) err(em ErrMsg) {
 	e.Pos = append(e.Pos,em)

@@ -85,3 +85,15 @@ func (b *ArrayLkup) LSStore(dest io.Writer, expr string) (expr2 string) {
 	return a1+"["+a2+"]"
 }
 
+type Assign struct{
+	noopExpr
+	Arg1,Arg2 Expression
+}
+func (b *Assign) Cap() int { return E_LOAD }
+func (b *Assign) Load(dest io.Writer) (expr string) {
+	CheckExprScalar(b.Arg1,b.Arg2)
+	a2 := b.Arg2.Load(dest)
+	a1 := b.Arg1.Store(dest,a2)
+	return a1
+}
+

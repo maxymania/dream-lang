@@ -10,9 +10,26 @@ import "github.com/maxymania/dream-lang/tree"
 
 import "text/scanner"
 
+func (e *ExprParser) writable(ex tree.Expression,el *lexer.Element) bool{
+	if (ex.Cap()&tree.E_STORE)!=0 {
+		return true
+	}
+	e.err(ErrMsg{el.Val.Pos,"expected ')', got '"+el.Val.Text+"'"})
+	return false
+}
+
 func (e *ExprParser) Expression(el *lexer.Element) (tree.Expression,*lexer.Element) {
-	//panic("")
-	return e.layerThreeExpression(el)
+	var x,x2 tree.Expression
+	begn := el;
+	x,el = e.layerThreeExpression(el)
+	if x==nil { return nil,nil }
+	if el2 := MatchK(el,'='); el2!=nil {
+		if !e.writable(x,begn) { return nil,nil }
+		x2,el = e.Expression(el2)
+		if x2==nil { return nil,nil }
+		x = &tree.Assign{Arg1:x,Arg2:x2 }
+	}
+	return x,el
 }
 func (e *ExprParser) layerThreeExpression(el *lexer.Element) (tree.Expression,*lexer.Element) {
 	var x,x2 tree.Expression
