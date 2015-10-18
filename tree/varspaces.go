@@ -16,7 +16,7 @@ type VarSpace interface{
 }
 
 type VarSpaceImpl int
-func (v VarSpaceImpl) DefineScalar(s string) {}
+func (v VarSpaceImpl) DefineScalar(s string) { }
 func (v VarSpaceImpl) Scalar(s string) Expression { return nil }
 
 const EmptyVS = VarSpaceImpl(0)

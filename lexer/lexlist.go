@@ -12,6 +12,11 @@ const(
 	K_ELSIF
 	K_ELSE
 	K_UNLESS
+	K_MY
+	K_SAY
+	K_WHILE
+	K_UNTIL
+	K_DO
 )
 
 type Token struct{
@@ -32,6 +37,11 @@ func (t *Token) scan(s *scanner.Scanner){
 		case "elsif": t.Kwrd = K_ELSIF
 		case "else": t.Kwrd = K_ELSE
 		case "unless": t.Kwrd = K_UNLESS
+		case "my": t.Kwrd = K_MY
+		case "say","print": t.Kwrd = K_SAY
+		case "while": t.Kwrd = K_WHILE
+		case "until": t.Kwrd = K_UNTIL
+		case "do": t.Kwrd = K_DO
 		}
 	}
 }
